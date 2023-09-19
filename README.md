@@ -1,3 +1,5 @@
+# Need to run Backend on Docker to use API. Link Backend: https://github.com/giangnhattruong/docker-apache-psql-laravel
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
