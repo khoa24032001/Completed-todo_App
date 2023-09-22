@@ -15,7 +15,11 @@ const actions = [
     },
 ]
 
-const DeleteTodoDialog = ({ open, todo, setIsDeleting, handleClose, handleDeleteError, handleDeleteSuccess }) => {
+const DeleteTodoDialog = ({ open, todo, setIsDeleting, handleClose, handleDeleteError, handleDeleteSuccess, onClickDelete }) => {
+    function handleDelete(id) {
+        onClickDelete(id)
+        handleClose()
+    }
     return (
         <ExDialog
             open={open}
@@ -34,10 +38,13 @@ const DeleteTodoDialog = ({ open, todo, setIsDeleting, handleClose, handleDelete
                             <>
                                 {action.action === 'confirm' ?
                                     (<Button key={idx}
-                                        onClick={() => {
-                                            deleteTodo(todo.id, handleDeleteSuccess, handleDeleteError, setIsDeleting)
-                                            handleClose()
-                                        }}
+                                        // Cach 1
+                                        // onClick={() => {
+                                        //     deleteTodo(todo.id, handleDeleteSuccess, handleDeleteError, setIsDeleting)
+                                        //     handleClose()
+                                        // }}
+                                        // Cach 2
+                                        onClick={handleDelete(todo.id)}
                                         {...action.style}>
                                         {action.title}
                                     </Button>) : (

@@ -5,7 +5,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextFiel
 import { Dropdown } from "../../../components/dropdown";
 import { STATUS_OPTIONS } from "../../../utils/constants";
 
-const EditTodoDialog = ({ open, handleClose, colors, todo, setIsEditing, handleUpdateError, handleUpdateSuccess }) => {
+const EditTodoDialog = ({ open, handleClose, colors, todo, setIsEditing, handleUpdateError, handleUpdateSuccess, onClickUpdate }) => {
     const [editedTodo, setEditedTodo] = useState(todo);
     // console.log(editedTodo.color.name)
 
@@ -39,7 +39,11 @@ const EditTodoDialog = ({ open, handleClose, colors, todo, setIsEditing, handleU
             color: color?.name,
             completed
         }
-        updateTodo(id, params, handleUpdateSuccess, handleUpdateError, setIsEditing)
+        // Cach 1
+        // updateTodo(id, params, handleUpdateSuccess, handleUpdateError, setIsEditing)
+
+        // Cach 2
+        onClickUpdate(id, params)
         handleClose()
     }
 

@@ -3,7 +3,7 @@ import { TodoItem } from "./TodoItem";
 import { Container, Stack, } from "@mui/material";
 import { Loading } from "../../../components/loadingPage";
 import { Pagination } from "../../../components/pagination";
-import { getTodos } from "../../../services/todo/todo-service";
+import { deleteTodoAsync, getTodos, getTodosAsync, updateTodoAsync } from "../../../services/todo/todo-service";
 import useToggle from "../../../hooks/useToggle";
 import { getColor } from "../../../services/todo/color-service";
 import DeleteTodoDialog from "../dialogs/DeleteTodoDialog";
@@ -41,25 +41,62 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
   const { toggle: openDeleteDial, handleOpen: handleOpenDelete, handleClose: handleCloseDeleteDial } = useToggle()
   const { toggle: openEditDial, handleOpen: handleOpenEdit, handleClose: handleCloseEditDial } = useToggle()
 
+  // cach 1 (getTodo)
+  // useEffect(() => {
+  //   const params = { page: currentPage, sortBy: "dateDesc", status: "all" }
+  //   if (selectedColor) params.colors = selectedColor
+  //   if (selectedStatus) params.status = selectedStatus
+  //   if (selectedSort) params.sortBy = selectedSort
+  //   getTodos(params, handleLoadTodoSuccess, handleLoadTodoError)
+  // }, [currentPage, selectedColor, selectedStatus, selectedSort]);
+
+  // const handleLoadTodoSuccess = (data) => {
+  //   onChangeTodos(data.data);
+  //   setLastPage(data.meta.last_page);
+  //   setIsLoading(false);
+  //   onChangeFiltering(false);
+  // }
+  // const handleLoadTodoError = (error) => {
+  //   console.error('Lỗi khi gọi API:', error);
+  //   setIsLoading(false);
+  // }
+
+  // cach 2 (test getTodosAsync)
+
   useEffect(() => {
     const params = { page: currentPage, sortBy: "dateDesc", status: "all" }
     if (selectedColor) params.colors = selectedColor
     if (selectedStatus) params.status = selectedStatus
     if (selectedSort) params.sortBy = selectedSort
-    getTodos(params, handleLoadTodoSuccess, handleLoadTodoError)
+
+    // Sử dụng getTodosAsync thay thế cho getTodos
+    getTodosAsync(params)
+      .then(data => {
+        if (data instanceof Error) {
+          // Xử lý lỗi nếu có
+          console.error('Lỗi khi gọi API:', data);
+        } else {
+          // Xử lý dữ liệu thành công
+          onChangeTodos(data.data);
+          setLastPage(data.meta.last_page);
+          onChangeFiltering(false);
+        }
+      })
+      .finally(() => {
+        // Dừng hiển thị loading sau khi xử lý xong (thành công hoặc thất bại)
+        setIsLoading(false);
+        // onChangeFiltering(false);
+      });
   }, [currentPage, selectedColor, selectedStatus, selectedSort]);
 
-  const handleLoadTodoSuccess = (data) => {
-    onChangeTodos(data.data);
-    setLastPage(data.meta.last_page);
-    setIsLoading(false);
-    onChangeFiltering(false);
-  }
-  const handleLoadTodoError = (error) => {
-    console.error('Lỗi khi gọi API:', error);
-    setIsLoading(false);
-  }
 
+
+
+  function handleDeleteTodo(todo) {
+    setCurrentTodo(todo)
+    handleOpenDelete()
+  }
+  // Cach 1 delete
   const handleDeleteSuccess = (todoId) => {
     const updatedTodos = [...todos].filter(todo => todo.id !== todoId);
     setIsDeleting(false);
@@ -70,6 +107,27 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
     console.error('Lỗi khi gọi API xóa todo:', error);
     setIsDeleting(false);
   }
+
+  // Cach 2 delete
+  function onClickDelete(todoId) {
+    setIsDeleting(true)
+    deleteTodoAsync(todoId)
+      .then(data => {
+        if (data instanceof Error) {
+          // Xử lý lỗi nếu có
+          console.error('Lỗi khi gọi API xóa todo:', data);
+        } else {
+          // Xóa dữ liệu todo thành công
+          const updatedTodos = [...todos].filter(todo => todo.id !== todoId);
+          onChangeTodos(updatedTodos);
+        }
+      })
+      .finally(() => {
+        // Dừng hiển thị loading sau khi xử lý xong (thành công hoặc thất bại)
+        setIsDeleting(false);
+      });
+  }
+
 
   const handleNextPage = () => {
     if (currentPage < lastPage) {
@@ -85,19 +143,12 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
     }
   };
 
-  function handleDeleteTodo(todo) {
-    setCurrentTodo(todo)
-    handleOpenDelete()
-  }
-
-
 
   function handleUpdateTodo(todo) {
     setCurrentTodo(todo)
     handleOpenEdit()
   }
-
-
+  // Cach 1 update
   const handleUpdateSuccess = (todoId, data) => {
     // console.log(data)
     const updatedTodos = [...todos].map(todo => (todo.id === todoId ? data : todo));
@@ -106,8 +157,28 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
   }
 
   const handleUpdateError = (error) => {
-    console.error('Lỗi khi gọi update API:', error);
+    console.error('Lỗi khi gọi update todo API:', error);
     setIsEditing(false)
+  }
+
+  // Cach 2 update
+  function onClickUpdate(todoId, params) {
+    setIsEditing(true)
+    updateTodoAsync(todoId, params)
+      .then(data => {
+        if (data instanceof Error) {
+          // Xử lý lỗi nếu có
+          console.error('Lỗi khi gọi update todo API :', data);
+        } else {
+          // Xóa dữ liệu todo thành công
+          const updatedTodos = [...todos].map(todo => (todo.id === todoId ? data : todo));
+          onChangeTodos(updatedTodos);
+        }
+      })
+      .finally(() => {
+        // Dừng hiển thị loading sau khi xử lý xong (thành công hoặc thất bại)
+        setIsEditing(false);
+      });
   }
 
 
@@ -160,18 +231,25 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
         open={openDeleteDial}
         todo={currentTodo}
         handleClose={handleCloseDeleteDial}
+        //Cach 1
         handleDeleteError={handleDeleteError}
         handleDeleteSuccess={handleDeleteSuccess}
-        setIsDeleting={setIsDeleting} />}
+        setIsDeleting={() => setIsDeleting(true)}
+        //Cach 2
+        onClickDelete={onClickDelete} />}
 
       {openEditDial && <EditTodoDialog
         open={openEditDial}
         todo={currentTodo}
         colors={colors}
         handleClose={handleCloseEditDial}
+        //Cach 1
         handleUpdateError={handleUpdateError}
         handleUpdateSuccess={handleUpdateSuccess}
-        setIsEditing={setIsEditing} />}
+        setIsEditing={() => setIsEditing(true)}
+        //Cach 2 
+        onClickUpdate={onClickUpdate}
+      />}
     </>
 
   );

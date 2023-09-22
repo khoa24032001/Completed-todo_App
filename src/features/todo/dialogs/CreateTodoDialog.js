@@ -4,7 +4,7 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 // import { COLORS, STATUS_OPTIONS } from "../../../utils/constants";
 // import { Dropdown } from "../../../components/dropdown";
 // import { getColor } from "../../../services/todo/color-service";
-import { addTodo } from "../../../services/todo/todo-service";
+import { addTodo, addTodoAsync, updateTodoAsync } from "../../../services/todo/todo-service";
 
 
 // De lam gi ????
@@ -31,10 +31,9 @@ export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChange
     };
 
 
-
+    // Cach 1
     const handleAddSuccess = (data) => {
         const newTodo = [data, ...todos]
-        console.log(newTodo)
         onChangeTodos(newTodo)
         onChangeAdding(false)
     }
@@ -45,6 +44,27 @@ export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChange
     }
 
 
+    // Cach 2
+    function onClickAdding(params) {
+        onChangeAdding(true)
+        addTodoAsync(params)
+            .then(data => {
+                if (data instanceof Error) {
+                    // Xử lý lỗi nếu có
+                    console.error('Lỗi khi gọi update todo API :', data);
+                } else {
+                    // Xóa dữ liệu todo thành công
+                    const newTodo = [data, ...todos]
+                    onChangeTodos(newTodo);
+                }
+            })
+            .finally(() => {
+                // Dừng hiển thị loading sau khi xử lý xong (thành công hoặc thất bại)
+                onChangeAdding(false);
+            });
+    }
+
+
     function handleSubmit() {
         const { text, color, completed } = todo ?? {}
         const params = {
@@ -52,7 +72,10 @@ export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChange
             color: color?.name,
             completed
         }
-        addTodo(params, handleAddSuccess, handleAddError, onChangeAdding)
+        //Cach 1
+        // addTodo(params, handleAddSuccess, handleAddError, () => onChangeAdding(true))
+        // Cach 2
+        onClickAdding(params)
         onClose()
     }
 
