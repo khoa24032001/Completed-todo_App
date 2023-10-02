@@ -1,4 +1,4 @@
-import { CreateTodoDialog } from "./CreateTodoDialog";
+import CreateTodoDialog from "./CreateTodoDialog";
 import withButton from "../../../hooks/withButton";
 
 

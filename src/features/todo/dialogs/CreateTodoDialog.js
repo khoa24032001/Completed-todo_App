@@ -5,6 +5,8 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 // import { Dropdown } from "../../../components/dropdown";
 // import { getColor } from "../../../services/todo/color-service";
 import { addTodo, addTodoAsync, updateTodoAsync } from "../../../services/todo/todo-service";
+import { addNewTodo } from "../../../app/redux/todos/todoActions";
+import { connect } from "react-redux";
 
 
 // De lam gi ????
@@ -14,7 +16,7 @@ import { addTodo, addTodoAsync, updateTodoAsync } from "../../../services/todo/t
 //
 
 
-export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChangeAdding }) => {
+const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChangeAdding, addNewTodo }) => {
 
 
     const [todo, setTodo] = useState({
@@ -75,7 +77,11 @@ export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChange
         //Cach 1
         // addTodo(params, handleAddSuccess, handleAddError, () => onChangeAdding(true))
         // Cach 2
-        onClickAdding(params)
+        // onClickAdding(params)
+
+        //REDUX
+        addNewTodo(params)
+
         onClose()
     }
 
@@ -86,8 +92,8 @@ export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChange
             <ExDialog.Body>
                 {/* Form to create a todo */}
                 <form>
-                    <Typography display='flex' mb={'10px'}>
-                        <Typography alignSelf={'center'} width={'120px'}>
+                    <Typography display='flex' mb={'10px'} component='div'>
+                        <Typography alignSelf={'center'} width={'120px'} component='div'>
                             Content:
                         </Typography>
                         <TextField
@@ -114,3 +120,22 @@ export const CreateTodoDialog = ({ open, onClose, todos, onChangeTodos, onChange
         </ExDialog>
     );
 };
+
+const mapStateToProps = state => {
+    // console.log(state)
+    return {
+        // todos: state.todo?.todos?.data,
+        todos: state.todo?.todos?.normalizedTodos,
+        isLoading: state.todo?.loading,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addNewTodo: (params) => dispatch(addNewTodo(params))
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps)(CreateTodoDialog)

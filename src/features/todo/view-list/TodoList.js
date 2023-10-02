@@ -8,10 +8,11 @@ import useToggle from "../../../hooks/useToggle";
 import { getColor } from "../../../services/todo/color-service";
 import DeleteTodoDialog from "../dialogs/DeleteTodoDialog";
 import EditTodoDialog from "../dialogs/EditTodoDialog";
+import { connect } from 'react-redux'
+import { fetchTodos } from "../../../app/redux/todos/todoActions";
 
 
-
-export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChangeFiltering, selectedColor, selectedStatus, selectedSort }) => {
+function TodoList({ todos, isLoading, onChangeTodos, isAdding, fetchTodos, lastPage, filterColor, filterStatus, filterSortBy, todosKey }) {
   const [currentTodo, setCurrentTodo] = useState(null)
   const [colors, setColors] = useState([]);
   useEffect(() => {
@@ -24,70 +25,58 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
   const handleLoadColorError = (error) => {
     console.error('Lỗi khi gọi color API:', error);
   }
-  // const handleParams = ({ params, selectedColor, selectedStatus, selectedSort }) => {
-  //   if (selectedColor) params.colors = selectedColor
-  //   if (selectedStatus) params.status = selectedStatus
-  //   if (selectedSort) params.sortBy = selectedSort
-  // }
 
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  // const [isAdding, setIsAdding] = useState(false);
 
   const { toggle: openDeleteDial, handleOpen: handleOpenDelete, handleClose: handleCloseDeleteDial } = useToggle()
   const { toggle: openEditDial, handleOpen: handleOpenEdit, handleClose: handleCloseEditDial } = useToggle()
 
-  // cach 1 (getTodo)
+
+
+  // TEST REDUX
+  useEffect(() => {
+    const params = { page: currentPage, sortBy: "dateDesc", status: "all" }
+    if (filterColor) params.colors = filterColor
+    if (filterStatus) params.status = filterStatus
+    if (filterSortBy) params.sortBy = filterSortBy
+
+    fetchTodos(params)
+
+  }, [currentPage, filterColor, filterStatus, filterSortBy])
+
+
+
+
+
+  // cach 2 (test getTodosAsync)
   // useEffect(() => {
   //   const params = { page: currentPage, sortBy: "dateDesc", status: "all" }
   //   if (selectedColor) params.colors = selectedColor
   //   if (selectedStatus) params.status = selectedStatus
   //   if (selectedSort) params.sortBy = selectedSort
-  //   getTodos(params, handleLoadTodoSuccess, handleLoadTodoError)
+
+  //   // Sử dụng getTodosAsync thay thế cho getTodos
+  //   getTodosAsync(params)
+  //     .then(data => {
+  //       if (data instanceof Error) {
+  //         // Xử lý lỗi nếu có
+  //         console.error('Lỗi khi gọi API:', data);
+  //       } else {
+  //         // Xử lý dữ liệu thành công
+  //         onChangeTodos(data.data);
+  //         setLastPage(data.meta.last_page);
+  //         onChangeFiltering(false);
+  //       }
+  //     })
+  //     .finally(() => {
+  //       // Dừng hiển thị loading sau khi xử lý xong (thành công hoặc thất bại)
+  //       setIsLoading(false);
+  //       // onChangeFiltering(false);
+  //     });
   // }, [currentPage, selectedColor, selectedStatus, selectedSort]);
-
-  // const handleLoadTodoSuccess = (data) => {
-  //   onChangeTodos(data.data);
-  //   setLastPage(data.meta.last_page);
-  //   setIsLoading(false);
-  //   onChangeFiltering(false);
-  // }
-  // const handleLoadTodoError = (error) => {
-  //   console.error('Lỗi khi gọi API:', error);
-  //   setIsLoading(false);
-  // }
-
-  // cach 2 (test getTodosAsync)
-
-  useEffect(() => {
-    const params = { page: currentPage, sortBy: "dateDesc", status: "all" }
-    if (selectedColor) params.colors = selectedColor
-    if (selectedStatus) params.status = selectedStatus
-    if (selectedSort) params.sortBy = selectedSort
-
-    // Sử dụng getTodosAsync thay thế cho getTodos
-    getTodosAsync(params)
-      .then(data => {
-        if (data instanceof Error) {
-          // Xử lý lỗi nếu có
-          console.error('Lỗi khi gọi API:', data);
-        } else {
-          // Xử lý dữ liệu thành công
-          onChangeTodos(data.data);
-          setLastPage(data.meta.last_page);
-          onChangeFiltering(false);
-        }
-      })
-      .finally(() => {
-        // Dừng hiển thị loading sau khi xử lý xong (thành công hoặc thất bại)
-        setIsLoading(false);
-        // onChangeFiltering(false);
-      });
-  }, [currentPage, selectedColor, selectedStatus, selectedSort]);
 
 
 
@@ -132,14 +121,14 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
   const handleNextPage = () => {
     if (currentPage < lastPage) {
       setCurrentPage(currentPage + 1);
-      setIsLoading(true);
+      // setIsLoading(true);
     }
   };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-      setIsLoading(true);
+      // setIsLoading(true);
     }
   };
 
@@ -181,19 +170,70 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
       });
   }
 
+  // Cách 1: render theo mảng
+  // const listTodo = useMemo(() => {
+  //   // {1: {id: 1, name: ""}} => array [{id: 1, name: ""}]
+  //   // {1: {id: 1, name: "A"}} => array [{id: 1, name: "A"}] 
+  //   // => results [1]
+  //   //  [id];
 
+  //   return todos?.map((todo) => (
+  //     <TodoItem
+  //       key={todo.id}
+  //       todo={todo}
+  //       onDelete={handleDeleteTodo}
+  //       onUpdate={handleUpdateTodo}
+  //     />
+  //   ))
+  // }, [todos]);
+  // console.log(todosKey)
+  // Cách 2: render theo obj
   const listTodo = useMemo(() => {
-    return todos.map((todo) => (
-      <TodoItem
-        key={todo.id}
-        todo={todo}
-        onDelete={handleDeleteTodo}
-        onUpdate={handleUpdateTodo}
-      />
-    ))
-  }, [todos]);
+    // if (!todos) return
+    // const sortedKeys = Object.keys(todos).sort((a, b) => todos[b].id - todos[a].id);
 
-  const showLoading = isLoading || isDeleting || isEditing || isAdding || isFiltering
+    if (!todosKey) return
+    return (
+      <>
+        {/* {Object.values(todos)?.map((todo) => (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onDelete={handleDeleteTodo}
+            onUpdate={handleUpdateTodo}
+          />
+        ))} */}
+
+        {/* {sortedKeys.map((key) => {
+          const todo = todos[key];
+          return (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              todoId={todo.id}
+              onDelete={handleDeleteTodo}
+              date={handleUpdateTodo}
+            />
+          )
+        })} */}
+
+        {todosKey.map((key) => {
+          return (
+            <TodoItem
+              key={key}
+              todoId={key}
+              onDelete={handleDeleteTodo}
+              onUpdate={handleUpdateTodo}
+            />
+          )
+        })}
+      </>
+    );
+    // }, [todos]);
+  }, [todosKey]);
+
+
+  const showLoading = isLoading || isDeleting || isEditing || isAdding
 
   return (
     <>
@@ -211,6 +251,7 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
         )}
         <Container maxWidth="md" sx={{ height: '75vh', overflow: 'auto', ...showLoading && { opacity: 0.3 } }}>
           {listTodo}
+          {/* {() => listTodo} */}
         </Container>
 
         <Pagination
@@ -231,29 +272,57 @@ export const TodoList = ({ todos, onChangeTodos, isAdding, isFiltering, onChange
         open={openDeleteDial}
         todo={currentTodo}
         handleClose={handleCloseDeleteDial}
-        //Cach 1
-        handleDeleteError={handleDeleteError}
-        handleDeleteSuccess={handleDeleteSuccess}
-        setIsDeleting={() => setIsDeleting(true)}
-        //Cach 2
-        onClickDelete={onClickDelete} />}
+      //Cach 1
+      // handleDeleteError={handleDeleteError}
+      // handleDeleteSuccess={handleDeleteSuccess}
+      // setIsDeleting={() => setIsDeleting(true)}
+      //Cach 2
+      // onClickDelete={onClickDelete}
+      // removeTodo={removeTodo} 
+      />}
 
       {openEditDial && <EditTodoDialog
         open={openEditDial}
         todo={currentTodo}
         colors={colors}
         handleClose={handleCloseEditDial}
-        //Cach 1
-        handleUpdateError={handleUpdateError}
-        handleUpdateSuccess={handleUpdateSuccess}
-        setIsEditing={() => setIsEditing(true)}
-        //Cach 2 
-        onClickUpdate={onClickUpdate}
+      //Cach 1
+      // handleUpdateError={handleUpdateError}
+      // handleUpdateSuccess={handleUpdateSuccess}
+      // setIsEditing={() => setIsEditing(true)}
+      //Cach 2 
+      // onClickUpdate={onClickUpdate}
       />}
     </>
 
   );
 };
+
+const mapStateToProps = state => {
+  // console.log("2", state)
+  // console.log("3", state.todo?.todos?.normalizedTodos)
+  return {
+    // todos: state.todo?.todos?.data,
+    todos: state.todo?.todos?.normalizedTodos,
+    todosKey: state.todo?.todosKey,
+    isLoading: state.todo?.loading,
+    // lastPage: state.todo?.todos?.meta?.last_page,
+    lastPage: state.todo?.todos?.todoListLastPage,
+    filterStatus: state.filter?.status,
+    filterColor: state.filter?.colors,
+    filterSortBy: state.filter?.sortBy
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchTodos: (params) => dispatch(fetchTodos(params)),
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps)(TodoList)
 
 
 

@@ -14,17 +14,17 @@ export const ViewDetailDialog = ({ todo, open, onClose }) => {
         <ExDialog open={open} onClose={onClose}>
             <ExDialog.Header title='View your todo' onClose={onClose} />
             <ExDialog.Body>
-                <Typography gutterBottom sx={{ display: 'flex', flexDirection: 'column', alignContent: 'space-between' }}>
+                <Typography gutterBottom sx={{ display: 'flex', flexDirection: 'column', alignContent: 'space-between' }} component='div'>
                     <Box sx={{ display: "flex" }}>
                         Content:
-                        <Typography fontWeight={'bold'} paddingLeft={'7px'}>
+                        <Typography fontWeight={'bold'} paddingLeft={'7px'} component='div'>
                             {content}
                         </Typography>
                     </Box>
                     {colorName ? <ColorTag color={colorName} /> : <ColorTag color={"None"} />}
                     <Box sx={{ display: "flex" }}>
                         Status:
-                        <Typography color={getColorStatus(status)} paddingLeft={'7px'}>
+                        <Typography color={getColorStatus(status)} paddingLeft={'7px'} component='div'>
                             {getNameStatus(status)}
                         </Typography>
                     </Box>

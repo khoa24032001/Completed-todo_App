@@ -1,4 +1,5 @@
 import { addData, deleteData, getData, updateData } from '../query';
+import { normalize, schema } from "normalizr";
 
 export function getTodos(params, onSuccess, onError) {
     getData('/todos', params).then(response => {
@@ -10,14 +11,26 @@ export function getTodos(params, onSuccess, onError) {
 }
 
 function convertTodos($todos) {
-    return $todos;
+    const normalizedTodos = normalize($todos.data, [Schema]);
+
+    const todoOriginList = normalizedTodos.entities?.todos;
+    const todosKey = normalizedTodos.result;
+
+    const todoListLastPage = $todos.meta.last_page;
+    return { normalizedTodos: todoOriginList, todosKey, todoListLastPage };
 }
+
+
+const Schema = new schema.Entity("todos", {}, { idAttribute: 'id' });
 
 export async function getTodosAsync(params) {
     try {
         const response = await getData('/todos', params)
-        // convert data
-        return convertTodos(response.data);
+        // console.log("hehe", response.data.data)
+        const data = convertTodos(response?.data);
+        // console.log(test);
+        // return response.data
+        return data
     } catch (error) {
         // get errors and return 
         // console.log('Lỗi khi gọi API:', error)
@@ -112,7 +125,8 @@ export async function updateTodoAsync(id, params) {
     try {
         const response = await updateData(`/todos/${id}`, params)
         const newTodo = response.data.data;
-        return newTodo;
+        const todoId = response.data.data.id;
+        return { newTodo, todoId };
     } catch (error) {
         // get errors and return 
         return error
@@ -143,8 +157,13 @@ export async function addTodo(params, onSuccess, onError, onStarted) {
 export async function addTodoAsync(params) {
     try {
         const response = await addData('/todos', params)
-        const newTodo = response.data.data;
-        return newTodo
+        // const newTodo = response.data.data; 
+        const todoId = response.data.data.id;
+
+        const newResponse = normalize(response.data, [Schema]);
+        const newTodo = newResponse.entities.todos
+
+        return { newTodo, todoId }
     } catch (error) {
         // get errors and return 
         return error

@@ -1,8 +1,8 @@
 import React from 'react';
 import Stack from "@mui/material/Stack";
-// import { Dropdown } from "../../../components/dropdown";
-// import { COLORS, SORT, STATUS_OPTIONS } from "../../../utils/constants";
 import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { connect } from 'react-redux';
+import { statusChange, colorChange, sortChange } from '../../../app/redux/filter/filterActions';
 
 const FILTER_COLOR = [
     { id: 0, value: '', name: "Not filter" },
@@ -28,20 +28,7 @@ const FILTER_SORT = [
     { id: 4, value: "dateDesc", name: "From Newest" },
 ];
 
-export const TodoFilter = ({ onChangeColor, onChangeStatus, onChangeSort, onChangeFiltering }) => {
-    const handleColorChange = (data) => {
-        onChangeColor(data);
-        onChangeFiltering(true);
-    }
-
-    const handleStatusChange = (data) => {
-        onChangeStatus(data);
-        onChangeFiltering(true);
-    }
-    const handleSortChange = (data) => {
-        onChangeSort(data);
-        onChangeFiltering(true);
-    }
+const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
 
     return (
         <Stack
@@ -68,8 +55,9 @@ export const TodoFilter = ({ onChangeColor, onChangeStatus, onChangeSort, onChan
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label={"Color"}
+                            defaultValue={""}
                             // value={todo?.completed}
-                            onChange={e => handleColorChange(e.target.value)}
+                            onChange={e => colorChange(e.target.value)}
                         >
                             {FILTER_COLOR.map((item) => {
                                 return (<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>)
@@ -85,8 +73,9 @@ export const TodoFilter = ({ onChangeColor, onChangeStatus, onChangeSort, onChan
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label={"Status"}
+                            defaultValue={""}
                             // value={todo?.completed}
-                            onChange={e => handleStatusChange(e.target.value)}
+                            onChange={e => statusChange(e.target.value)}
                         >
                             {FILTER_STATUS.map((item) => {
                                 return (<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>)
@@ -110,8 +99,9 @@ export const TodoFilter = ({ onChangeColor, onChangeStatus, onChangeSort, onChan
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label={"Sort by"}
+                            defaultValue={""}
                             // value={todo?.completed}
-                            onChange={e => handleSortChange(e.target.value)}
+                            onChange={e => sortChange(e.target.value)}
                         >
                             {FILTER_SORT.map((item) => {
                                 return (<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>)
@@ -123,3 +113,23 @@ export const TodoFilter = ({ onChangeColor, onChangeStatus, onChangeSort, onChan
         </Stack>
     );
 }
+
+const mapStateToProps = state => {
+    return {
+        status: state.filter?.status,
+        colors: state.filter?.colors,
+        sortBy: state.filter?.sortBy
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        statusChange: (params) => dispatch(statusChange(params)),
+        colorChange: (params) => dispatch(colorChange(params)),
+        sortChange: (params) => dispatch(sortChange(params))
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps)(TodoFilter)
