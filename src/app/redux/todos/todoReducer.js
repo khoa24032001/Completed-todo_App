@@ -13,15 +13,14 @@ import {
 const initialState = {
     loading: false,
     todos: {},
-    todosKey: [],
-    // todos: [],
+    todosIds: [],
+    todosLastPage: 0,
     error: ''
 }
 
 
 
 const todoReducer = (state = initialState, action) => {
-    // console.log(state)
     switch (action.type) {
         case LIST_TODOS_LOADING:
             return {
@@ -29,11 +28,11 @@ const todoReducer = (state = initialState, action) => {
                 loading: true
             }
         case FETCH_TODOS_SUCCESS:
-            // console.log(action.payload)
             return {
                 ...state,
-                todos: action.payload,
-                todosKey: action.payload.todosKey,
+                todos: action.payload.normalizedTodos,
+                todosIds: action.payload.todosIds,
+                todosLastPage: action.payload.todoListLastPage,
                 loading: false,
             }
         case FETCH_TODOS_FAILURE:
@@ -44,20 +43,11 @@ const todoReducer = (state = initialState, action) => {
             }
         case ADD_TODO_SUCCESS:
             const newTodo = action.payload.todo
-            // const todos = [];
-            // todos = [...todos, newTodo] => [newTodo]
-            // const newListTodo = [newTodo, ...state.todos?.data]
             return {
+                ...state,
                 loading: false,
-                todos: {
-                    ...state.todos,
-                    normalizedTodos: { ...newTodo, ...state.todos.normalizedTodos }
-                },
-                // todos: {
-                //     ...state.todos,
-                //     data: newListTodo
-                // },
-                todosKey: [action.payload.id, ...state.todosKey],
+                todos: { ...newTodo, ...state.todos },
+                todosIds: [action.payload.id, ...state.todosIds],
                 error: ''
             }
 
@@ -69,22 +59,13 @@ const todoReducer = (state = initialState, action) => {
             }
         case DELETE_TODO_SUCCESS:
             const todoIdToDelete = action.payload;
-            // const updatedTodos = state.todos?.data.filter((todo) => todo.id !== todoIdToDelete);
-            // const newListTodo = [newTodo, ...state.todos?.data]
-            const updatedTodos = { ...state.todos.normalizedTodos }
+            const updatedTodos = { ...state.todos }
             delete updatedTodos[todoIdToDelete]
             return {
-
+                ...state,
                 loading: false,
-                todos: {
-                    ...state.todos,
-                    normalizedTodos: updatedTodos
-                },
-                // todos: {
-                //     ...state.todos,
-                //     data: updatedTodos
-                // },
-                todosKey: state.todosKey?.filter(item => item !== todoIdToDelete),
+                todos: updatedTodos,
+                todosIds: state.todosIds?.filter(item => item !== todoIdToDelete),
                 error: ''
             }
         case DELETE_TODO_FAILURE:
@@ -96,22 +77,12 @@ const todoReducer = (state = initialState, action) => {
         case UPDATE_TODO_SUCCESS:
             const todoId = action.payload.id
             const updatedTodoData = action.payload.todo
-            // const updatedNewTodos = state.todos?.data.map((todo) =>
-            //     todo.id === todoId ? { ...todo, ...updatedTodoData } : todo
-            // );
-            const updatedNewTodos = { ...state.todos.normalizedTodos }
+            const updatedNewTodos = { ...state.todos }
             updatedNewTodos[todoId] = { ...updatedNewTodos[todoId], ...updatedTodoData }
             return {
                 ...state,
                 loading: false,
-                todos: {
-                    ...state.todos,
-                    normalizedTodos: updatedNewTodos
-                },
-                // todos: {
-                //     ...state.todos,
-                //     data: updatedNewTodos
-                // },
+                todos: updatedNewTodos,
                 error: ''
             }
         case UPDATE_TODO_FAILURE:

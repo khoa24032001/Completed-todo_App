@@ -11,17 +11,11 @@ export const CheckBox = ({ state }) => {
         setCompleted(state)
     }, [state])
 
-    // const changeStatus = () => {
-    //     setCompleted(!completed);
-    // }
     return (
         <>
             {
                 !completed ? <CheckCircleOutlineIcon sx={{ color: "gray", fontSize: "50px" }} /> :
                     <CheckCircleOutlineIcon sx={{ color: "green", fontSize: "50px" }} />
-
-                // !completed ? <CheckCircleOutlineIcon sx={{ color: "gray", fontSize: "50px" }} onClick={changeStatus} /> :
-                //     <CheckCircleOutlineIcon sx={{ color: "green", fontSize: "50px" }} onClick={changeStatus} />
             }
         </>
     )

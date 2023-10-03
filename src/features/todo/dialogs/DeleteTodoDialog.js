@@ -1,6 +1,5 @@
 import { Button, Typography } from "@mui/material"
 import { ExDialog } from "../../../components/dialog"
-import { deleteTodo } from "../../../services/todo/todo-service"
 import { removeTodo } from "../../../app/redux/todos/todoActions"
 import { connect } from "react-redux"
 
@@ -19,12 +18,9 @@ const actions = [
     },
 ]
 
-const DeleteTodoDialog = ({ open, todo, setIsDeleting, handleClose, handleDeleteError, handleDeleteSuccess, onClickDelete, removeTodo }) => {
+const DeleteTodoDialog = ({ open, todo, handleClose, removeTodo }) => {
 
-    function handleDelete(id) {
-        // onClickDelete(id)
-        handleClose()
-    }
+
     return (
         <ExDialog
             open={open}
@@ -48,13 +44,6 @@ const DeleteTodoDialog = ({ open, todo, setIsDeleting, handleClose, handleDelete
                                             removeTodo(todo.id)
                                             handleClose()
                                         }}
-                                        // Cach 1
-                                        // onClick={() => {
-                                        //     deleteTodo(todo.id, handleDeleteSuccess, handleDeleteError, setIsDeleting)
-                                        //     handleClose()
-                                        // }}
-                                        // Cach 2
-                                        // onClick={handleDelete(todo.id)}
                                         {...action.style}>
                                         {action.title}
                                     </Button>) : (
@@ -73,7 +62,6 @@ const DeleteTodoDialog = ({ open, todo, setIsDeleting, handleClose, handleDelete
 }
 
 const mapStateToProps = state => {
-    // console.log(state)
     return {
         todos: state.todo?.todos?.data,
         isLoading: state.todo?.loading,

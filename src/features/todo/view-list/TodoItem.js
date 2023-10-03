@@ -7,26 +7,14 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { CheckBox } from "../../../components/checkbox";
 import { ListTodoButton } from "../../../components/buttons";
-import { ColorTag } from "../../../components/color_Tag";
-
-
+import { ColorTag } from "../../../components/colorTag";
 import { Stack } from "@mui/material";
-
 import useToggle from "../../../hooks/useToggle";
 import { ViewDetailDialog } from "../dialogs/ViewDetailDialog";
+import { selectTodoById } from "../../../app/redux/todos/todoSelect";
+import { useSelector } from "react-redux";
 
-import { useSelector } from 'react-redux'
 
-
-// const ACTION_TYPE = {
-//   yes: 'yes',
-//   no: 'no'
-// }
-
-// const actions = [
-//   { title: 'Yes', action: ACTION_TYPE.yes },
-//   { title: 'No', action: ACTION_TYPE.no }
-// ]
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   // alignItems: 'stretch',
@@ -40,23 +28,15 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 
 
-export const TodoItem = ({ todo, onDelete, onUpdate, todoId }) => {
+export const TodoItem = ({ onDelete, onUpdate, todoId }) => {
   const { toggle: isOpenViewDial, handleOpen, handleClose } = useToggle()
 
-  // const { text: content, color, completed: status } = todo
-  // const { name: colorName } = color ?? {}
+  const todo = useSelector((state) => selectTodoById(state, todoId))
 
-  const todoA = useSelector((state) => state.todo?.todos?.normalizedTodos[todoId])
-  // console.log(todoA)
-
-  // function handleAction(action) {
-  //   if (action === "delete") onDelete?.(todo);
-  //   else onUpdate?.(todo);
-  // }
 
   function handleAction(action) {
-    if (action === "delete") onDelete?.(todoA);
-    else onUpdate?.(todoA);
+    if (action === "delete") onDelete?.(todo);
+    else onUpdate?.(todo);
   }
   return (
     <>
@@ -77,8 +57,7 @@ export const TodoItem = ({ todo, onDelete, onUpdate, todoId }) => {
               aria-label="open drawer"
               sx={{ mr: 2 }}
             >
-              {/* <CheckBox state={status} /> */}
-              <CheckBox state={todoA?.completed} />
+              <CheckBox state={todo?.completed} />
             </IconButton>
             <Stack flex={1} >
               <Typography
@@ -92,39 +71,18 @@ export const TodoItem = ({ todo, onDelete, onUpdate, todoId }) => {
                 maxWidth={"300px"}
                 sx={{ rowGap: "50px", color: "black" }}
               >
-                {/* {content} */}
-                {todoA?.text}
+                {todo?.text}
               </Typography>
-              {/* {colorName ? <ColorTag color={colorName} /> : <ColorTag color={"None"} />} */}
-              {todoA?.color?.name ? <ColorTag color={todoA?.color?.name} /> : <ColorTag color={"None"} />}
+              {todo?.color?.name ? <ColorTag color={todo?.color?.name} /> : <ColorTag color={"None"} />}
             </Stack>
-            {/* suy nghi cach giai quyet dialog button */}
             <ListTodoButton onAction={handleAction} />
           </StyledToolbar>
         </AppBar>
       </Box>
-      {/* <ConfirmDialog open={isOpenViewDial} actions={actions} onConfirm={(action) => {
-        switch (action) {
-          case ACTION_TYPE.yes:
-            
-            break;
-          case ACTION_TYPE.no: 
 
-            break;
-          default:
-            break;
-        }
-      }} /> */}
-
-      {/* <ConfirmDialog open={isOpenViewDial} actions={actions} onConfirm={handleClose} /> */}
-      {/* {isOpenViewDial && <ViewDetailDialog open={isOpenViewDial} onClose={handleClose} todo={todo} />} */}
-      {isOpenViewDial && <ViewDetailDialog open={isOpenViewDial} onClose={handleClose} todo={todoA} />}
+      {isOpenViewDial && <ViewDetailDialog open={isOpenViewDial} onClose={handleClose} todo={todo} />}
     </>
   );
 };
 
-// TodoItem.propTypes = {
-//   content: PropTypes.string.isRequired,
-//   color: PropTypes.string.isRequired,
-//   status: PropTypes.bool.isRequired,
-// };
+

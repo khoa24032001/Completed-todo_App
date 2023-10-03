@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { updateTodo } from "../../../services/todo/todo-service";
 import { ExDialog } from "../../../components/dialog";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { Dropdown } from "../../../components/dropdown";
@@ -7,7 +6,7 @@ import { STATUS_OPTIONS } from "../../../utils/constants";
 import { connect } from "react-redux";
 import { changeTodo } from "../../../app/redux/todos/todoActions";
 
-const EditTodoDialog = ({ open, handleClose, colors, todo, setIsEditing, handleUpdateError, handleUpdateSuccess, onClickUpdate, changeTodo }) => {
+const EditTodoDialog = ({ open, handleClose, colors, todo, changeTodo }) => {
     const [editedTodo, setEditedTodo] = useState(todo);
 
     function handleEditChange(e, field) {
@@ -40,14 +39,6 @@ const EditTodoDialog = ({ open, handleClose, colors, todo, setIsEditing, handleU
             color: color?.name,
             completed
         }
-        // Cach 1
-        // updateTodo(id, params, handleUpdateSuccess, handleUpdateError, setIsEditing)
-
-        // Cach 2
-        // onClickUpdate(id, params)
-
-        //REDUX
-        // console.log("1", params)
         changeTodo(id, params)
         handleClose()
     }

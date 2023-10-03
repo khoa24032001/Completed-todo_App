@@ -14,10 +14,10 @@ function convertTodos($todos) {
     const normalizedTodos = normalize($todos.data, [Schema]);
 
     const todoOriginList = normalizedTodos.entities?.todos;
-    const todosKey = normalizedTodos.result;
+    const todosIds = normalizedTodos.result;
 
     const todoListLastPage = $todos.meta.last_page;
-    return { normalizedTodos: todoOriginList, todosKey, todoListLastPage };
+    return { normalizedTodos: todoOriginList, todosIds, todoListLastPage };
 }
 
 
@@ -26,40 +26,12 @@ const Schema = new schema.Entity("todos", {}, { idAttribute: 'id' });
 export async function getTodosAsync(params) {
     try {
         const response = await getData('/todos', params)
-        // console.log("hehe", response.data.data)
         const data = convertTodos(response?.data);
-        // console.log(test);
-        // return response.data
         return data
     } catch (error) {
-        // get errors and return 
-        // console.log('Lỗi khi gọi API:', error)
         return error
     }
 }
-
-// export function getTodos(params, onSuccess, onError) {
-//     try {
-//         const response = getData('/todos', params).then((res) => {
-//             const data = convertTodos(response.data);
-//             onSuccess?.(data);
-//         })
-//     } catch (error) {
-//         onError?.(error);
-//     }
-// }
-
-
-
-// export function deleteTodo(id, onSuccess, onError, isDeleting) {
-//     isDeleting(true);
-//     deleteData(`/todos/${id}`).then(response => {
-//         const todoId = response.data.data.id;
-//         onSuccess?.(todoId);
-//     }).catch(error => {
-//         onError?.(error);
-//     });
-// }
 
 export async function deleteTodo(id, onSuccess, onError, onStarted) {
     onStarted();
@@ -79,35 +51,9 @@ export async function deleteTodoAsync(id) {
         const todoId = response.data.data.id;
         return todoId;
     } catch (error) {
-        // get errors and return 
         return error
     }
 }
-
-// export function deleteTodo(id, onSuccess, onError, onStarted = null) {
-
-//     try {
-//         onStarted?.(true);
-//         const response = deleteData(`/todos/${id}`).then((res) => {
-//             const todoId = response.data.data.id;
-//             onSuccess?.(todoId);
-//         }).then((error) => {
-//             onError?.(error);
-//         })
-
-//     }
-// }
-
-// export function updateTodo(id, params, onSuccess, onError, isEditing) {
-//     isEditing(true);
-//     updateData(`/todos/${id}`, params).then(response => {
-//         const todoId = response.data.data.id;
-//         const newTodos = response.data.data;
-//         onSuccess?.(todoId, newTodos);
-//     }).catch(error => {
-//         onError?.(error);
-//     });
-// }
 
 export async function updateTodo(id, params, onSuccess, onError, onStarted) {
     onStarted();
@@ -128,20 +74,9 @@ export async function updateTodoAsync(id, params) {
         const todoId = response.data.data.id;
         return { newTodo, todoId };
     } catch (error) {
-        // get errors and return 
         return error
     }
 }
-
-// export function addTodo(params, onSuccess, onError, isAdding) {
-//     isAdding(true);
-//     addData(`/todos`, params).then(response => {
-//         const newTodos = response.data.data;
-//         onSuccess?.(newTodos);
-//     }).catch(error => {
-//         onError?.(error);
-//     });
-// }
 
 export async function addTodo(params, onSuccess, onError, onStarted) {
     onStarted();
@@ -157,7 +92,6 @@ export async function addTodo(params, onSuccess, onError, onStarted) {
 export async function addTodoAsync(params) {
     try {
         const response = await addData('/todos', params)
-        // const newTodo = response.data.data; 
         const todoId = response.data.data.id;
 
         const newResponse = normalize(response.data, [Schema]);
@@ -165,7 +99,6 @@ export async function addTodoAsync(params) {
 
         return { newTodo, todoId }
     } catch (error) {
-        // get errors and return 
         return error
     }
 }

@@ -2,12 +2,20 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const todoSlice = createSlice({
     name: 'todos',
-    initialState: { data: [], loading: false, error: null },
+    initialState:
+    {
+        loading: false,
+        todos: {},
+        todosIds: [],
+        todosLastPage: 0,
+        error: ''
+    },
     reducers: {
-        setTodos: (state, action) => {
-            state.data = action.payload;
-            state.loading = false;
-            state.error = null;
+        fetchTodos: (state, action) => {
+            state.loading = action.payload;
+            state.todos = action.payload.normalizedTodos;
+            state.todoIds = action.payload.todosIds;
+            state.error = action.payload;
         },
         addTodo: (state, action) => {
             state.data.push(action.payload);

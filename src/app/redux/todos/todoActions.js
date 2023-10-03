@@ -84,28 +84,14 @@ export const updateTodoFailure = error => {
 }
 
 export const fetchTodos = (params) => {
-    // getTodosAsync(params)
-    // return async (dispatch) => {
-    //     await dispatch(listTodosLoading())
-    //     getData('/todos', params).then(response => {
-    //         console.log(response);
-    //         const todos = response.data
-    //         dispatch(fetchTodosSuccess(todos))
-    //     })
-    //         .catch(error => {
-    //             dispatch(fetchTodosFailure(error.message))
-    //         })
-    // }
     return async (dispatch) => {
         await dispatch(listTodosLoading())
         getTodosAsync(params)
             .then(data => {
                 // console.log(data)
                 if (data instanceof Error) {
-                    // Xử lý lỗi nếu có
                     dispatch(fetchTodosFailure(data))
                 } else {
-                    // Xử lý dữ liệu thành công
                     dispatch(fetchTodosSuccess(data))
                 }
             });
@@ -115,23 +101,12 @@ export const fetchTodos = (params) => {
 export const addNewTodo = (params) => {
     return async (dispatch) => {
         await dispatch(listTodosLoading())
-        // addData('/todos', params).then(response => {
-        //     console.log(response.data.data)
-        //     const todo = response.data?.data
-        //     console.log('addNewTodo', todo);
-        //     dispatch(addTodoSuccess(todo))
-        // })
-        //     .catch(error => {
-        //         dispatch(addTodoFailure(error.message))
-        //     })
         addTodoAsync(params)
             .then(data => {
                 // console.log(data)
                 if (data instanceof Error) {
-                    // Xử lý lỗi nếu có
                     dispatch(addTodoFailure(data))
                 } else {
-                    // Xử lý dữ liệu thành công
                     dispatch(addTodoSuccess(data?.newTodo, data?.todoId))
                 }
             });
@@ -141,21 +116,11 @@ export const addNewTodo = (params) => {
 export const removeTodo = (id) => {
     return async (dispatch) => {
         await dispatch(listTodosLoading())
-        // deleteData(`/todos/${id}`).then(response => {
-        //     const todoId = response.data.data.id;
-        //     dispatch(deleteTodoSuccess(todoId))
-        // })
-        //     .catch(error => {
-        //         dispatch(deleteTodoFailure(error.message))
-        //     })
         deleteTodoAsync(id)
             .then(data => {
-                // console.log(data)
                 if (data instanceof Error) {
-                    // Xử lý lỗi nếu có
                     dispatch(deleteTodoFailure(data))
                 } else {
-                    // Xử lý dữ liệu thành công
                     dispatch(deleteTodoSuccess(data))
                 }
             });
@@ -165,22 +130,12 @@ export const removeTodo = (id) => {
 export const changeTodo = (id, params) => {
     return async (dispatch) => {
         await dispatch(listTodosLoading())
-        // updateData(`/todos/${id}`, params).then(response => {
-        //     const newTodo = response.data.data;
-        //     const todoId = response.data.data.id;
-        //     dispatch(updateTodoSuccess(newTodo, todoId))
-        // })
-        //     .catch(error => {
-        //         dispatch(updateTodoFailure(error.message))
-        //     })
         updateTodoAsync(id, params)
             .then(data => {
                 // console.log(data)
                 if (data instanceof Error) {
-                    // Xử lý lỗi nếu có
                     dispatch(updateTodoFailure(data))
                 } else {
-                    // Xử lý dữ liệu thành công
                     dispatch(updateTodoSuccess(data?.newTodo, data?.todoId))
                 }
             });

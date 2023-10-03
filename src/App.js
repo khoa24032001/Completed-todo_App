@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { Stack } from '@mui/material'
 import { AppHeader, AppContent, AppFooter } from "./components/app";
 import TodoFilter from "./features/todo/view-list/TodoFilter";
 import { AddTodoButton } from "./features/todo/dialogs/AddTodoButton";
 import TodoList from "./features/todo/view-list/TodoList"; // dùng function
-// import {TodoList} from "./features/todo/view-list/TodoList"; // dùng const
 
 
 
 function App() {
-  // const [isAdding, setIsAdding] = useState(false);
 
   return (
     <div className="App">
@@ -18,7 +16,6 @@ function App() {
           <AddTodoButton
             labelBtn='Add'
             styleBtn={{ variant: 'outlined', sx: { color: '' } }}
-          // onChangeAdding={data => setIsAdding(data)}
           />
         )
       }} />

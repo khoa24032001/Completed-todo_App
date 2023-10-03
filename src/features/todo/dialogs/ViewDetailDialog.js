@@ -1,7 +1,7 @@
 import React from 'react'
 import { ExDialog } from '../../../components/dialog';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { ColorTag } from '../../../components/color_Tag';
+import { ColorTag } from '../../../components/colorTag';
 import { getColorStatus, getNameStatus } from '../../../utils/helper';
 
 
