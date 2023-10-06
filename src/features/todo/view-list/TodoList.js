@@ -7,13 +7,27 @@ import useToggle from "../../../hooks/useToggle";
 import { getColor } from "../../../services/todo/color-service";
 import DeleteTodoDialog from "../dialogs/DeleteTodoDialog";
 import EditTodoDialog from "../dialogs/EditTodoDialog";
-import { connect } from 'react-redux'
-import { fetchTodos } from "../../../app/redux/todos/todoActions";
+import { connect, useSelector, useDispatch } from 'react-redux'
+// import { fetchTodos } from "../../../app/redux/todos/todoActions";
 import { selectFilterColor, selectFilterSortBy, selectFilterStatus, selectTodosIds, selectTodosLastPage, selectTodosLoading } from "../../../app/redux/todos/todoSelect";
+import { fetchTodos } from "../../../app/redux/todos/todoThunk";
 
 
 
-function TodoList({ isLoading, isAdding, fetchTodos, lastPage, filterColor, filterStatus, filterSortBy, todosIds }) {
+// function TodoList({ isLoading, isAdding, fetchTodos, lastPage, filterColor, filterStatus, filterSortBy, todosIds }) {
+function TodoList({ isAdding }) {
+
+  const todosIds = useSelector((state) => selectTodosIds(state));
+  // console.log(todosIds2)
+  const isLoading = useSelector((state) => selectTodosLoading(state));
+  const lastPage = useSelector((state) => selectTodosLastPage(state));
+  const filterStatus = useSelector((state) => selectFilterStatus(state));
+  const filterColor = useSelector((state) => selectFilterColor(state));
+  const filterSortBy = useSelector((state) => selectFilterSortBy(state));
+  const dispatch = useDispatch();
+
+
+
   const [currentTodo, setCurrentTodo] = useState(null)
   const [colors, setColors] = useState([]);
   useEffect(() => {
@@ -37,12 +51,12 @@ function TodoList({ isLoading, isAdding, fetchTodos, lastPage, filterColor, filt
 
   // TEST REDUX
   useEffect(() => {
-    const params = { page: currentPage, sortBy: "dateDesc", status: "all" }
+    const params = { page: currentPage, sortBy: "", status: "all" }
     if (filterColor) params.colors = filterColor
     if (filterStatus) params.status = filterStatus
     if (filterSortBy) params.sortBy = filterSortBy
 
-    fetchTodos(params)
+    dispatch(fetchTodos(params))
 
   }, [currentPage, filterColor, filterStatus, filterSortBy])
 
@@ -142,26 +156,28 @@ function TodoList({ isLoading, isAdding, fetchTodos, lastPage, filterColor, filt
 };
 
 
-const mapStateToProps = state => {
-  return {
-    todosIds: selectTodosIds(state),
-    isLoading: selectTodosLoading(state),
-    lastPage: selectTodosLastPage(state),
-    filterStatus: selectFilterStatus(state),
-    filterColor: selectFilterColor(state),
-    filterSortBy: selectFilterSortBy(state)
-  }
-}
+// const mapStateToProps = state => {
+//   return {
+//     todosIds: selectTodosIds(state),
+//     isLoading: selectTodosLoading(state),
+//     lastPage: selectTodosLastPage(state),
+//     filterStatus: selectFilterStatus(state),
+//     filterColor: selectFilterColor(state),
+//     filterSortBy: selectFilterSortBy(state)
+//   }
+// }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchTodos: (params) => dispatch(fetchTodos(params)),
-  }
-}
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     fetchTodos: (params) => dispatch(fetchTodos(params)),
+//   }
+// }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps)(TodoList)
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps)(TodoList)
+
+export default TodoList
 
 
 

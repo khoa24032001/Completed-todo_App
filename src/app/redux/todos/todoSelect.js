@@ -30,7 +30,7 @@ const selectFilterColor = (state) => {
 }
 
 const selectFilterSortBy = (state) => {
-    return state.filter
+    return state.filter?.sortBy
 }
 
 export { selectTodosList, selectTodosLoading, selectTodoById, selectTodosIds, selectTodosLastPage, selectFilterStatus, selectFilterColor, selectFilterSortBy }

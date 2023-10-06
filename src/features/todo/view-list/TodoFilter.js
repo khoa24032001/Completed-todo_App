@@ -1,8 +1,9 @@
 import React from 'react';
 import Stack from "@mui/material/Stack";
 import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { connect } from 'react-redux';
-import { statusChange, colorChange, sortChange } from '../../../app/redux/filter/filterActions';
+import { connect, useDispatch } from 'react-redux';
+// import { statusChange, colorChange, sortChange } from '../../../app/redux/filter/filterActions';
+import { statusChange, colorChange, sortChange } from '../../../app/redux/filter/filterSlice'
 
 const FILTER_COLOR = [
     { id: 0, value: '', name: "Not filter" },
@@ -28,7 +29,10 @@ const FILTER_SORT = [
     { id: 4, value: "dateDesc", name: "From Newest" },
 ];
 
-const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
+// const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
+const TodoFilter = () => {
+    //Redux toolkit
+    const dispatch = useDispatch();
 
     return (
         <Stack
@@ -57,7 +61,10 @@ const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
                             label={"Color"}
                             defaultValue={""}
                             // value={todo?.completed}
-                            onChange={e => colorChange(e.target.value)}
+                            // onChange={e => colorChange(e.target.value)}
+
+                            //RTK
+                            onChange={e => dispatch(colorChange(e.target.value))}
                         >
                             {FILTER_COLOR.map((item) => {
                                 return (<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>)
@@ -75,7 +82,10 @@ const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
                             label={"Status"}
                             defaultValue={""}
                             // value={todo?.completed}
-                            onChange={e => statusChange(e.target.value)}
+                            // onChange={e => statusChange(e.target.value)}
+
+                            //RTK
+                            onChange={e => dispatch(statusChange(e.target.value))}
                         >
                             {FILTER_STATUS.map((item) => {
                                 return (<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>)
@@ -101,7 +111,10 @@ const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
                             label={"Sort by"}
                             defaultValue={""}
                             // value={todo?.completed}
-                            onChange={e => sortChange(e.target.value)}
+                            // onChange={e => sortChange(e.target.value)}
+
+                            //RTK
+                            onChange={e => dispatch(sortChange(e.target.value))}
                         >
                             {FILTER_SORT.map((item) => {
                                 return (<MenuItem key={item.value} value={item.value}>{item.name}</MenuItem>)
@@ -114,22 +127,24 @@ const TodoFilter = ({ statusChange, colorChange, sortChange }) => {
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        status: state.filter?.status,
-        colors: state.filter?.colors,
-        sortBy: state.filter?.sortBy
-    }
-}
+// const mapStateToProps = state => {
+//     return {
+//         status: state.filter?.status,
+//         colors: state.filter?.colors,
+//         sortBy: state.filter?.sortBy
+//     }
+// }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        statusChange: (params) => dispatch(statusChange(params)),
-        colorChange: (params) => dispatch(colorChange(params)),
-        sortChange: (params) => dispatch(sortChange(params))
-    }
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         statusChange: (params) => dispatch(statusChange(params)),
+//         colorChange: (params) => dispatch(colorChange(params)),
+//         sortChange: (params) => dispatch(sortChange(params))
+//     }
+// }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps)(TodoFilter)
+// export default connect(
+//     mapStateToProps,
+//     mapDispatchToProps)(TodoFilter)
+
+export default TodoFilter

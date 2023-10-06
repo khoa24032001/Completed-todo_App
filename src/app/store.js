@@ -1,21 +1,20 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import todosReducer from './redux/todos/todoSlice';
-// import { fetchTodos } from './redux/todos/todoThunk';
-
-// const store = configureStore({
-//     reducer: {
-//         todos: todosReducer,
-//     },
-//     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(fetchTodos),
-// });
-
-// export default store;
-
 import { createStore, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import rootReducer from './rootReducer'
 import thunk from 'redux-thunk'
+import { configureStore } from '@reduxjs/toolkit';
+import todoReducer from './redux/todos/todoSlice';
+import filterReducer from './redux/filter/filterSlice';
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
+// Redux
+// const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
+
+// Redux toolkit
+const store = configureStore({
+    reducer: {
+        todo: todoReducer,
+        filter: filterReducer,
+    },
+})
 
 export default store

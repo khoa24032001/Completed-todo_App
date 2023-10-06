@@ -1,7 +1,8 @@
 import { Button, Typography } from "@mui/material"
 import { ExDialog } from "../../../components/dialog"
-import { removeTodo } from "../../../app/redux/todos/todoActions"
-import { connect } from "react-redux"
+// import { removeTodo } from "../../../app/redux/todos/todoActions"
+import { connect, useDispatch } from "react-redux"
+import { removeTodo } from "../../../app/redux/todos/todoThunk"
 
 const actions = [
     {
@@ -18,7 +19,9 @@ const actions = [
     },
 ]
 
-const DeleteTodoDialog = ({ open, todo, handleClose, removeTodo }) => {
+// const DeleteTodoDialog = ({ open, todo, handleClose, removeTodo }) => {
+const DeleteTodoDialog = ({ open, todo, handleClose }) => {
+    const dispatch = useDispatch()
 
 
     return (
@@ -40,8 +43,13 @@ const DeleteTodoDialog = ({ open, todo, handleClose, removeTodo }) => {
                                 {action.action === 'confirm' ?
                                     (<Button key={action.id}
                                         //REDUX
+                                        // onClick={() => {
+                                        //     removeTodo(todo.id)
+                                        //     handleClose()
+                                        // }}
+                                        //REDUX TOOLKIT
                                         onClick={() => {
-                                            removeTodo(todo.id)
+                                            dispatch(removeTodo(todo.id))
                                             handleClose()
                                         }}
                                         {...action.style}>
@@ -61,20 +69,22 @@ const DeleteTodoDialog = ({ open, todo, handleClose, removeTodo }) => {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        todos: state.todo?.todos?.data,
-        isLoading: state.todo?.loading,
-    }
-}
+// const mapStateToProps = state => {
+//     return {
+//         todos: state.todo?.todos?.data,
+//         isLoading: state.todo?.loading,
+//     }
+// }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        removeTodo: (params) => dispatch(removeTodo(params))
-    }
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         removeTodo: (params) => dispatch(removeTodo(params))
+//     }
+// }
 
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps)(DeleteTodoDialog)
+// export default connect(
+//     mapStateToProps,
+//     mapDispatchToProps)(DeleteTodoDialog)
+
+export default DeleteTodoDialog

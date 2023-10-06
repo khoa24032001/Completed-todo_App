@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { ExDialog } from "../../../components/dialog";
 import { Button, Stack, TextField, Typography } from "@mui/material";
-import { addNewTodo } from "../../../app/redux/todos/todoActions";
-import { connect } from "react-redux";
+// import { addNewTodo } from "../../../app/redux/todos/todoActions";
+import { connect, useDispatch } from "react-redux";
+import { addNewTodo } from "../../../app/redux/todos/todoThunk";
 
 
-const CreateTodoDialog = ({ open, onClose, addNewTodo }) => {
-
+// const CreateTodoDialog = ({ open, onClose, addNewTodo }) => {
+const CreateTodoDialog = ({ open, onClose }) => {
+    const dispatch = useDispatch();
 
     const [todo, setTodo] = useState({
         text: " ",
@@ -28,7 +30,7 @@ const CreateTodoDialog = ({ open, onClose, addNewTodo }) => {
             color: color?.name,
             completed
         }
-        addNewTodo(params)
+        dispatch(addNewTodo(params))
 
         onClose()
     }
@@ -68,19 +70,21 @@ const CreateTodoDialog = ({ open, onClose, addNewTodo }) => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        todos: state.todo?.todos?.normalizedTodos,
-        isLoading: state.todo?.loading,
-    }
-}
+// const mapStateToProps = state => {
+//     return {
+//         todos: state.todo?.todos?.normalizedTodos,
+//         isLoading: state.todo?.loading,
+//     }
+// }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        addNewTodo: (params) => dispatch(addNewTodo(params))
-    }
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         addNewTodo: (params) => dispatch(addNewTodo(params))
+//     }
+// }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps)(CreateTodoDialog)
+// export default connect(
+//     mapStateToProps,
+//     mapDispatchToProps)(CreateTodoDialog)
+
+export default CreateTodoDialog

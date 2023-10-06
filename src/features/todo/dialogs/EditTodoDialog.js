@@ -3,10 +3,13 @@ import { ExDialog } from "../../../components/dialog";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { Dropdown } from "../../../components/dropdown";
 import { STATUS_OPTIONS } from "../../../utils/constants";
-import { connect } from "react-redux";
-import { changeTodo } from "../../../app/redux/todos/todoActions";
+import { connect, useDispatch } from "react-redux";
+// import { changeTodo } from "../../../app/redux/todos/todoActions";
+import { changeTodo } from "../../../app/redux/todos/todoThunk";
 
-const EditTodoDialog = ({ open, handleClose, colors, todo, changeTodo }) => {
+// const EditTodoDialog = ({ open, handleClose, colors, todo, changeTodo }) => {
+const EditTodoDialog = ({ open, handleClose, colors, todo }) => {
+    const dispatch = useDispatch();
     const [editedTodo, setEditedTodo] = useState(todo);
 
     function handleEditChange(e, field) {
@@ -39,7 +42,11 @@ const EditTodoDialog = ({ open, handleClose, colors, todo, changeTodo }) => {
             color: color?.name,
             completed
         }
-        changeTodo(id, params)
+        //Redux
+        // changeTodo(id, params)
+
+        //Redux toolkit
+        dispatch(changeTodo({ id: id, params: params }))
         handleClose()
     }
 
@@ -120,23 +127,25 @@ const EditTodoDialog = ({ open, handleClose, colors, todo, changeTodo }) => {
     )
 }
 
-const mapStateToProps = state => {
-    // console.log(state)
-    return {
-        todos: state.todo?.todos?.data,
-        isLoading: state.todo?.loading,
-    }
-}
+// const mapStateToProps = state => {
+//     // console.log(state)
+//     return {
+//         todos: state.todo?.todos?.data,
+//         isLoading: state.todo?.loading,
+//     }
+// }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        changeTodo: (id, params) => dispatch(changeTodo(id, params))
-    }
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         changeTodo: (id, params) => dispatch(changeTodo(id, params))
+//     }
+// }
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps)(EditTodoDialog)
+// export default connect(
+//     mapStateToProps,
+//     mapDispatchToProps)(EditTodoDialog)
+
+export default EditTodoDialog
 
 
 
