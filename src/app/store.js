@@ -5,6 +5,8 @@ import thunk from 'redux-thunk'
 import { configureStore } from '@reduxjs/toolkit';
 import todoReducer from './redux/todos/todoSlice';
 import filterReducer from './redux/filter/filterSlice';
+import { apiSlice } from './redux/api/apiSlice';
+
 
 // Redux
 // const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
@@ -14,7 +16,10 @@ const store = configureStore({
     reducer: {
         todo: todoReducer,
         filter: filterReducer,
-    },
-})
 
-export default store
+        [apiSlice.reducerPath]: apiSlice.reducer,
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware)
+});
+
+export default store;

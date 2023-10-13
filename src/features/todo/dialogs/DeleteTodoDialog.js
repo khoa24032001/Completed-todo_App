@@ -20,9 +20,8 @@ const actions = [
 ]
 
 // const DeleteTodoDialog = ({ open, todo, handleClose, removeTodo }) => {
-const DeleteTodoDialog = ({ open, todo, handleClose }) => {
+const DeleteTodoDialog = ({ open, todo, handleClose, onClickDelete }) => {
     const dispatch = useDispatch()
-
 
     return (
         <ExDialog
@@ -49,7 +48,9 @@ const DeleteTodoDialog = ({ open, todo, handleClose }) => {
                                         // }}
                                         //REDUX TOOLKIT
                                         onClick={() => {
-                                            dispatch(removeTodo(todo.id))
+                                            // dispatch(removeTodo(todo.id)
+                                            // deleteRTKTodo(todo.id)
+                                            onClickDelete(todo.id)
                                             handleClose()
                                         }}
                                         {...action.style}>

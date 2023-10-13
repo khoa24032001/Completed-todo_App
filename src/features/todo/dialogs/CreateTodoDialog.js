@@ -4,10 +4,12 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 // import { addNewTodo } from "../../../app/redux/todos/todoActions";
 import { connect, useDispatch } from "react-redux";
 import { addNewTodo } from "../../../app/redux/todos/todoThunk";
+import { useCreateTodoMutation } from "../../../app/redux/api/apiSlice";
+
 
 
 // const CreateTodoDialog = ({ open, onClose, addNewTodo }) => {
-const CreateTodoDialog = ({ open, onClose }) => {
+const CreateTodoDialog = ({ open, onClose, onChangeAdding }) => {
     const dispatch = useDispatch();
 
     const [todo, setTodo] = useState({
@@ -22,6 +24,16 @@ const CreateTodoDialog = ({ open, onClose }) => {
             [field]: e.target.value
         }));
     };
+    const [addRTKTodo] = useCreateTodoMutation();
+    function onClickAdding(params) {
+        onChangeAdding(true)
+        addRTKTodo(params)
+            .finally(() => {
+                onChangeAdding(false);
+            });
+    }
+
+
 
     function handleSubmit() {
         const { text, color, completed } = todo ?? {}
@@ -30,8 +42,8 @@ const CreateTodoDialog = ({ open, onClose }) => {
             color: color?.name,
             completed
         }
-        dispatch(addNewTodo(params))
-
+        // dispatch(addNewTodo(params))
+        onClickAdding(params)
         onClose()
     }
 

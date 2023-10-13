@@ -8,8 +8,9 @@ import { connect, useDispatch } from "react-redux";
 import { changeTodo } from "../../../app/redux/todos/todoThunk";
 
 // const EditTodoDialog = ({ open, handleClose, colors, todo, changeTodo }) => {
-const EditTodoDialog = ({ open, handleClose, colors, todo }) => {
+const EditTodoDialog = ({ open, handleClose, colors, todo, onClickUpdate }) => {
     const dispatch = useDispatch();
+
     const [editedTodo, setEditedTodo] = useState(todo);
 
     function handleEditChange(e, field) {
@@ -46,7 +47,9 @@ const EditTodoDialog = ({ open, handleClose, colors, todo }) => {
         // changeTodo(id, params)
 
         //Redux toolkit
-        dispatch(changeTodo({ id: id, params: params }))
+        // dispatch(changeTodo({ id: id, params: params }))
+
+        onClickUpdate({ id: id, params: params });
         handleClose()
     }
 

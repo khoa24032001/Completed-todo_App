@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Stack } from '@mui/material'
 import { AppHeader, AppContent, AppFooter } from "./components/app";
 import TodoFilter from "./features/todo/view-list/TodoFilter";
@@ -8,6 +8,7 @@ import TodoList from "./features/todo/view-list/TodoList"; // dùng function
 
 
 function App() {
+  const [isAdding, setIsAdding] = useState(false);
 
   return (
     <div className="App">
@@ -16,6 +17,7 @@ function App() {
           <AddTodoButton
             labelBtn='Add'
             styleBtn={{ variant: 'outlined', sx: { color: '' } }}
+            onChangeAdding={data => setIsAdding(data)}
           />
         )
       }} />
@@ -24,7 +26,7 @@ function App() {
           return (
             <Stack>
               <TodoFilter />
-              <TodoList />
+              <TodoList isAdding={isAdding} />
             </Stack>
           );
         }}

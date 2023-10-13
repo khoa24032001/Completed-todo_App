@@ -13,6 +13,8 @@ import useToggle from "../../../hooks/useToggle";
 import { ViewDetailDialog } from "../dialogs/ViewDetailDialog";
 import { selectTodoById } from "../../../app/redux/todos/todoSelect";
 import { useSelector } from "react-redux";
+import { useGetTodoByIdQuery } from "../../../app/redux/api/apiSlice";
+
 
 
 
@@ -28,10 +30,14 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 
 
-export const TodoItem = ({ onDelete, onUpdate, todoId }) => {
+export const TodoItem = ({ onDelete, onUpdate, todoId, todo }) => {
   const { toggle: isOpenViewDial, handleOpen, handleClose } = useToggle()
 
-  const todo = useSelector((state) => selectTodoById(state, todoId))
+  // const todo = useSelector((state) => selectTodoById(state, todoId))
+
+  // const result = useGetTodoByIdQuery(todoId)
+  // // console.log(3, result)
+  // const todo2 = result?.data?.data
 
 
   function handleAction(action) {
